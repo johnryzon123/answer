@@ -8,12 +8,10 @@ int main(void) {
   int a[N], i;
 
   // Prompts the user to enter 10 numbers to be sorted.
-  printf("Enter %d numbers to be sorted\n", N);
+  printf("Enter %d numbers to be sorted: ", N);
 
-  for (int i = 0; i < N; i++) {
-    printf("%d: ", i + 1);
+  for (int i = 0; i < N; i++)
     scanf("%d", &a[i]);
-  }
 
   int *low, *high;
   low = &a[0];
@@ -33,28 +31,27 @@ int main(void) {
 
 // Swaps two numbers
 void swap(int *a, int *b) {
-  int c = *a;
+  int temp = *a;
   *a = *b;
-  *b = c;
+  *b = temp;
 }
 
 // Splits an array of numbers down the middle.
-int* split(int *low, int *high, int *middle) {
-  int *i, *j;
-  i = low;
-  j = high;
-  int p = *middle;
+int* split(int *low, int *high) {
+    int pivot = *low;
+    int *i = low;
+    int *j = high;
 
-  while (j > middle) {
-    while (p < *i)
-      middle++;
-    while (*j > *i)
-      j--;
-    if (j > middle) swap(middle,j);
-  }
+    while (1) {
+        while (*j > pivot && i < j) j--;
+        while (*i <= pivot && i < j) i++;
 
-  swap(low, j);
-  return j;
+        if (i >= j) break;
+        swap(i, j);
+    }
+    
+    swap(low, j);
+    return j;
 }
 
 // Finds the middle element of an array. 
@@ -64,12 +61,9 @@ int* find_middle(int *left, int *right) {
 
 // Sorts an array of numbers from lowest to highest. 
 void quicksort(int *low, int *high) {
-  // Ends the function if there is only 1 number in the array. 
-  if (low >= high) return;
-  // Splits the array at roughly the center.
-  int *middle = split(low, high, find_middle(low, high));
-  // Quicksorts the left half of the array.
-  quicksort(low, middle - 1);
-  // Quicksorts the right half of the array.
-  quicksort(middle + 1, high);
+    if (low >= high) return;
+
+    int *middle = split(low, high);
+    quicksort(low, middle - 1);
+    quicksort(middle + 1, high);
 }
